@@ -1,0 +1,37 @@
+name: Deploy to Firebase App Hosting on Tag Push
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Authenticate to Google Cloud. Provide the service account JSON as the
+      # FIREBASE_SERVICE_ACCOUNT secret (must have the Firebase App Hosting Admin role).
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      # Create a rollout for the App Hosting backend from the pushed tag's commit
+      # on the connected branch. Set FIREBASE_PROJECT and APPHOSTING_BACKEND as
+      # repository variables (Settings -> Variables -> Actions).
+      - name: Trigger App Hosting rollout
+        run: |
+          firebase apphosting:rollouts:create "${{ vars.APPHOSTING_BACKEND }}" \
+            --project "${{ vars.FIREBASE_PROJECT }}" \
+            --git-branch main \
+            --non-interactive
