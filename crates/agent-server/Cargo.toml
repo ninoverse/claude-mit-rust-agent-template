@@ -1,0 +1,17 @@
+[package]
+name = "agent-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+agent-core = { path = "../agent-core" }
+agent-tools = { path = "../agent-tools" }
+tokio = { workspace = true }
+axum = { workspace = true }
+serde = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
