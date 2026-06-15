@@ -1,0 +1,17 @@
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/ninoverse/claude_mit_rust_template"
+rust-version = "1.84"
+
+[workspace.dependencies]
+# Pin shared dependencies here so every crate in the workspace gets the same
+# version. Reference them in crate manifests with `<name> = { workspace = true }`.
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
