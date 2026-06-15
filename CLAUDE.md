@@ -8,13 +8,11 @@ This file provides strict guidance and architectural rules for Claude Code (clau
 - **Maintain the Build:** Never leave the codebase in a state where build, lint, or tests fail. Run the relevant commands below to verify your work before concluding a task.
 
 ```bash
+cargo run -p agent-cli                                                 # Start interactive Agent CLI
 cargo build --workspace                                                # Build all crates
-cargo watch -x 'check --workspace'                                     # Dev loop (requires cargo-watch)
-cargo build --workspace --release                                      # Release build
 cargo clippy --workspace --all-targets --all-features -- -D warnings   # Lint
 cargo fmt --all                                                        # Format (check-only: `cargo fmt --all -- --check`)
-cargo nextest run --workspace                                          # Tests (fallback: cargo test --workspace)
-cargo deny check                                                       # Licenses + advisories
+cargo test --workspace                                                 # Run workspace tests
 cargo audit                                                            # CVE check
 ```
 

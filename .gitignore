@@ -1,2 +1,8 @@
 /target
 **/*.rs.bk
+
+# Local environment variables and secrets
+.env
+
+# Local agent run history/cache
+history.json
