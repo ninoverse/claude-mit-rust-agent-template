@@ -50,26 +50,15 @@ async fn main() -> anyhow::Result<()> {
         Err(e) => eprintln!("Warning: failed to parse {}: {}", args.env_file, e),
     }
 
-    // Resolve log filter:
-    //   1. --log flag (highest priority)
+    // Resolve the log filter in priority order:
+    //   1. --log flag
     //   2. RUST_LOG env var (set by .env or the shell)
     //   3. hard-coded fallback
-    let filter_str = args
-        .log
-        .as_deref()
-        .or_else(|| std::env::var("RUST_LOG").ok().as_deref().map(|_| ""))
-        .unwrap_or("agent_core=info,warn");
-
-    // Use try_from_env so RUST_LOG is honoured; fall back to filter_str.
-    let env_filter = EnvFilter::try_from_env("RUST_LOG")
-        .or_else(|_| EnvFilter::try_new(filter_str))
-        .unwrap_or_else(|_| EnvFilter::new("warn"));
-
-    // Override entirely if --log was supplied
-    let env_filter = if let Some(ref log_arg) = args.log {
-        EnvFilter::try_new(log_arg).unwrap_or(env_filter)
+    let env_filter = if let Some(log_arg) = args.log.as_deref() {
+        EnvFilter::try_new(log_arg).unwrap_or_else(|_| EnvFilter::new("warn"))
     } else {
-        env_filter
+        EnvFilter::try_from_env("RUST_LOG")
+            .unwrap_or_else(|_| EnvFilter::new("agent_core=info,warn"))
     };
 
     tracing_subscriber::fmt()
@@ -233,11 +222,21 @@ async fn main() -> anyhow::Result<()> {
                     }
                 })
                 .unwrap_or_else(|_| "(not set)".to_string());
+            let anthropic_key = std::env::var("ANTHROPIC_API_KEY")
+                .map(|v| {
+                    if v.is_empty() {
+                        "(empty)".to_string()
+                    } else {
+                        "(set)".to_string()
+                    }
+                })
+                .unwrap_or_else(|_| "(not set)".to_string());
             let model = std::env::var("AGENT_MODEL").unwrap_or_else(|_| "(not set)".to_string());
             println!("\x1b[1;36mEnvironment Configuration:\x1b[0m");
             println!("  RUST_LOG          = {}", rust_log);
             println!("  GEMINI_API_KEY    = {}", gemini_key);
             println!("  OPENAI_API_KEY    = {}", openai_key);
+            println!("  ANTHROPIC_API_KEY = {}", anthropic_key);
             println!("  AGENT_MODEL       = {}", model);
             println!("  env file          = {}", args.env_file);
             continue;

@@ -5,7 +5,7 @@ resolver = "2"
 [workspace.package]
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/ninoverse/claude_mit_rust_template"
+repository = "https://github.com/ninoverse/claude-mit-rust-agent-template"
 rust-version = "1.84"
 
 [workspace.dependencies]

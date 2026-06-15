@@ -13,6 +13,7 @@ cargo build --workspace                                                # Build a
 cargo clippy --workspace --all-targets --all-features -- -D warnings   # Lint
 cargo fmt --all                                                        # Format (check-only: `cargo fmt --all -- --check`)
 cargo test --workspace                                                 # Run workspace tests
+cargo deny check                                                       # Licenses + advisories (deny.toml)
 cargo audit                                                            # CVE check
 ```
 

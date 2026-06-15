@@ -1,6 +1,6 @@
 # Rust AI Agent Template
 
-Scaffolding for building and running custom agentic AI systems in Rust. This repository contains a production-ready, fully type-safe, and modular 3-crate architecture that compiles instantly and runs out of the box with zero external API dependencies (via a built-in mock LLM provider).
+Scaffolding for building and running custom agentic AI systems in Rust. This repository provides a type-safe, modular 3-crate architecture that runs out of the box with zero external API dependencies via a built-in mock LLM provider. The bundled tools (a single-operator calculator and a clock) are illustrative starting points — swap in real tools and a real `LlmProvider` to build something production-grade.
 
 ## Workspace Layout
 
@@ -21,9 +21,9 @@ Run the interactive shell:
 cargo run -p agent-cli
 ```
 
-To see trace logs of agent thinking, planning, and tool execution, run with verbose mode:
+To see trace logs of agent thinking, planning, and tool execution, raise the log level:
 ```bash
-cargo run -p agent-cli -- --verbose
+cargo run -p agent-cli -- --log debug
 ```
 
 ### 2. Run Workspace Tests
@@ -90,7 +90,8 @@ registry.register(GreetingTool::new());
 To connect the agent to a real LLM provider (like Gemini, OpenAI, or Anthropic), implement the `LlmProvider` trait in `agent-core::llm`:
 
 ```rust
-use agent_core::llm::{LlmProvider, ChatMessage, LlmResponse, ToolDefinition, ToolCall};
+use agent_core::llm::{LlmProvider, ChatMessage, LlmResponse, ToolCall};
+use agent_core::tool::ToolDefinition;
 use agent_core::error::AgentError;
 
 pub struct CustomLlmClient {
