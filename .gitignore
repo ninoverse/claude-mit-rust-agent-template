@@ -4,5 +4,8 @@
 # Local environment variables and secrets
 .env
 
+# GCP service account key (Cloud Run deploy)
+key.json
+
 # Local agent run history/cache
 history.json
