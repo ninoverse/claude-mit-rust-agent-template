@@ -11,7 +11,7 @@ The project is structured as a cargo workspace with the following crates:
 | `agent-core` | `crates/agent-core` | Foundation traits & struct orchestrators: LLM providers, Memory/History, Tools, and the Agent Execution Loop. |
 | `agent-tools` | `crates/agent-tools` | Built-in out-of-the-box agent tools: mathematical calculations, system info/time, etc. |
 | `agent-cli` | `crates/agent-cli` | Interactive CLI application providing a colored, user-friendly terminal interface to chat with the agent. |
-| `agent-server` | `crates/agent-server` | HTTP server (`/chat` JSON API) wrapping the agent, deployable to Firebase App Hosting via the repo-root `Dockerfile` + `apphosting.yaml`. |
+| `agent-server` | `crates/agent-server` | HTTP server (`/chat` JSON API) wrapping the agent, deployable to Cloud Run via the repo-root `Dockerfile`. |
 
 ## Quick Start
 
