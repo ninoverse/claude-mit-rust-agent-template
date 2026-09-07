@@ -10,6 +10,12 @@ allow = [
     "BSD-3-Clause",
     "ISC",
     "Unicode-DFS-2016",
+    # Unicode-DFS-2016's successor. The whole icu_* chain relicensed to it, and
+    # jsonschema reaches that chain through idna.
+    "Unicode-3.0",
+    # MIT without the attribution clause — strictly more permissive than MIT,
+    # which is already allowed above.
+    "MIT-0",
     "CC0-1.0",
 ]
 confidence-threshold = 0.93
@@ -21,6 +27,11 @@ ignore = []
 [bans]
 multiple-versions = "warn"
 wildcards = "deny"
+# A `{ path = "..." }` dependency with no version requirement is a wildcard, so
+# the four crates here depending on each other trip the rule above. This exempts
+# path dependencies specifically; a wildcard on anything from a registry is
+# still denied, which is the case the rule is actually for.
+allow-wildcard-paths = true
 
 [sources]
 unknown-registry = "deny"

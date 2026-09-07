@@ -7,7 +7,13 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/ninoverse/claude-mit-rust-agent-template"
-rust-version = "1.84"
+rust-version = "1.86"
+# These are application crates — a CLI, an HTTP server, and the two libraries
+# they share — not something to put on crates.io. It is also what lets them
+# depend on each other by path: cargo-deny reads a path dependency with no
+# version requirement as a wildcard, and only exempts one on a private crate.
+# Set `publish = true` on a specific crate if you do mean to publish that one.
+publish = false
 
 [workspace.dependencies]
 dotenvy = "0.15"
