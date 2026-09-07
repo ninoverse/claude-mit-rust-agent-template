@@ -1,2 +1,2 @@
-msrv = "1.84"
+msrv = "1.86"
 avoid-breaking-exported-api = false
