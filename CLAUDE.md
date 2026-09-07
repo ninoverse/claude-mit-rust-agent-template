@@ -7,21 +7,38 @@ This file provides strict guidance and architectural rules for Claude Code (clau
 - **Toolchain:** Rust is pinned via `rust-toolchain.toml` (channel = `stable`). Every contributor automatically gets the latest stable toolchain on first `cargo` invocation. Required components: `rustfmt`, `clippy`.
 - **Maintain the Build:** Never leave the codebase in a state where build, lint, or tests fail. Run the relevant commands below to verify your work before concluding a task.
 
-```bash
-cargo run -p agent-cli                                                 # Start interactive Agent CLI
-cargo build --workspace                                                # Build all crates
-cargo clippy --workspace --all-targets --all-features -- -D warnings   # Lint
-cargo fmt --all                                                        # Format (check-only: `cargo fmt --all -- --check`)
-cargo test --workspace                                                 # Run workspace tests
-cargo deny check                                                       # Licenses + advisories (deny.toml)
-cargo audit                                                            # CVE check
-```
-
-Install the auxiliary tools once per machine:
+Commands live in the `justfile`, which is the single source of truth — do not
+copy the underlying cargo invocations into docs or CI, call the recipe.
 
 ```bash
-cargo install --locked cargo-nextest cargo-watch cargo-deny cargo-audit
+just            # list every recipe
+just ci         # all four merge gates, in order — run this before every commit
+just build      # build all crates
+just check      # type-check (faster than build)
+just watch      # dev loop, re-checks on save
+just fmt        # format in place
+just fmt-check  # gate 1
+just lint       # gate 2 — clippy, warnings as errors
+just test       # gate 3 — nextest (falls back to cargo test) plus doc-tests
+just deny       # gate 4 — licenses + advisories
+just audit      # CVE check
+just release    # optimized build
 ```
+
+Run the agent itself with `cargo run -p agent-cli`, after copying
+`.env.example` to `.env` and filling in a provider key.
+
+Install `just` and the auxiliary tools once per machine:
+
+```bash
+cargo install --locked just
+just setup      # cargo-nextest, cargo-watch, cargo-deny, cargo-audit
+```
+
+**Automation:** `.claude/settings.json` allowlists these commands so they do not
+prompt, runs `rustfmt` on every `.rs` file you edit, and warns if the workspace
+stops compiling when a turn ends. Formatting is therefore already handled — do
+not run `cargo fmt` after each edit.
 
 ## Architecture & Workspace Rules
 
@@ -29,7 +46,9 @@ cargo install --locked cargo-nextest cargo-watch cargo-deny cargo-audit
 
 **Crate inheritance:** Crate manifests inherit shared keys from the workspace using `<key>.workspace = true` (e.g. `edition.workspace = true`, `license.workspace = true`). Shared dependencies are referenced as `<crate> = { workspace = true }`.
 
-**MSRV:** Pinned in `clippy.toml` and `[workspace.package].rust-version`. Do not bump it incidentally.
+**Crate visibility:** `publish = false` is inherited from `[workspace.package]`. These are application crates, and it is also what lets them depend on each other by path — `cargo deny` reads a versionless path dependency as a wildcard and exempts one only on a private crate.
+
+**MSRV:** Declared in **four** places — `[workspace.package].rust-version`, `clippy.toml`, the `Dockerfile` base image, and the `msrv` input in `.github/workflows/ci.yml`. Raising it means editing all four together; the MSRV job compares the last against the first and fails a partial bump. Do not bump it incidentally.
 
 ## Behavioral Guidelines
 
@@ -72,7 +91,10 @@ cargo install --locked cargo-nextest cargo-watch cargo-deny cargo-audit
 
 Use your file-reading capabilities to read the exact rules in the `.claude/` directory **before** executing any of the following tasks:
 
-- **Committing code:** Read `.claude/commit-conventions.md`
+- **Any change that ends in a PR:** Read `.claude/git-flow.md` **first** — it defines the branch → commit → PR loop everything else fits inside
+- **Adding a crate:** `/new-crate <name>` runs the `.claude/crate-workflow.md` checklist
+- **Checking your work:** `/gates` reports which of the four merge gates pass
+- **Committing code:** Read `.claude/commit-conventions.md` — the merged subject line also picks the next version number
 - **Creating branches:** Read `.claude/branch-naming.md`
 - **Reviewing PRs:** Read `.claude/code-review.md`
 - **Testing/Verifying:** Read `.claude/testing-requirements.md`
