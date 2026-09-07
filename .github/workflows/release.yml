@@ -1,40 +1,33 @@
 name: Deploy to Cloud Run on Tag Push
 
+# The deploy itself lives in ninoverse/.github; this file sets the trigger and
+# names the service. Cloud Build builds the repo-root Dockerfile via
+# `--source .`, pushes the image, and deploys it. Cloud Run injects PORT, which
+# agent-server reads.
+#
+# The tag this watches for is the one bump-version.yml pushes. That only works
+# because that workflow pushes with a GitHub App token: a tag pushed with
+# GITHUB_TOKEN deliberately does not trigger other workflows, so this would
+# never fire.
+#
+# Before this can deploy, set as repository variables and secrets:
+#   vars.GCP_PROJECT, vars.GCP_REGION, secrets.GCP_SERVICE_ACCOUNT
+
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      # Authenticate to Google Cloud. Provide the service account JSON as the
-      # GCP_SERVICE_ACCOUNT secret (needs Cloud Run Admin + Service Account User,
-      # and Cloud Build / Artifact Registry access for --source builds).
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-
-      - name: Set up gcloud
-        uses: google-github-actions/setup-gcloud@v2
-
-      # Builds the repo-root Dockerfile via Cloud Build, pushes the image, and
-      # deploys it. Cloud Run injects PORT, which agent-server reads.
-      # Set GCP_PROJECT and GCP_REGION as repository variables.
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy agent-server \
-            --source . \
-            --project "${{ vars.GCP_PROJECT }}" \
-            --region "${{ vars.GCP_REGION }}" \
-            --allow-unauthenticated \
-            --quiet
+    uses: ninoverse/.github/.github/workflows/release-cloudrun.yml@v1
+    with:
+      # Matches the binary the Dockerfile builds with `-p agent-server`.
+      service: agent-server
+      project: ${{ vars.GCP_PROJECT }}
+      region: ${{ vars.GCP_REGION }}
+    secrets:
+      gcp-service-account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
