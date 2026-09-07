@@ -3,6 +3,7 @@
 use serde::Serialize;
 use serde_json::Value;
 use std::collections::HashMap;
+use std::fmt;
 use std::sync::Arc;
 
 /// Schema representing a tool parameter description (typically JSON Schema).
@@ -30,6 +31,20 @@ pub trait Tool: Send + Sync {
 #[derive(Clone, Default)]
 pub struct ToolRegistry {
     tools: HashMap<String, Arc<dyn Tool>>,
+}
+
+// Written out rather than derived: `dyn Tool` is not `Debug`, and requiring it
+// would force the bound on every tool anyone writes. The registered names are
+// the part worth seeing anyway, sorted so the output does not vary with the
+// map's iteration order.
+impl fmt::Debug for ToolRegistry {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut names: Vec<&str> = self.tools.keys().map(String::as_str).collect();
+        names.sort_unstable();
+        f.debug_struct("ToolRegistry")
+            .field("tools", &names)
+            .finish()
+    }
 }
 
 impl ToolRegistry {

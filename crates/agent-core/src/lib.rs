@@ -16,6 +16,10 @@ pub mod tool;
 
 #[cfg(test)]
 mod tests {
+    // Test code asserts rather than propagating: these three are workspace lints
+    // and fire in test targets too. See .claude/code-review.md.
+    #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic_in_result_fn)]
+
     use super::*;
     use agent::Agent;
     use error::AgentError;

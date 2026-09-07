@@ -4,6 +4,7 @@ use crate::error::AgentError;
 use crate::llm::{ChatMessage, LlmProvider, LlmResponse};
 use crate::memory::Memory;
 use crate::tool::ToolRegistry;
+use std::fmt;
 use std::sync::Arc;
 
 /// Hook invoked before executing a tool to request user or system confirmation.
@@ -24,6 +25,25 @@ where
     memory: M,
     max_steps: usize,
     execution_hook: Option<Arc<dyn ToolExecutionHook>>,
+}
+
+// Written out rather than derived: a derive would add `P: Debug, M: Debug`
+// bounds that no provider or memory implementation is obliged to satisfy, and
+// `dyn ToolExecutionHook` could not satisfy one at all. The remaining fields are
+// what is actually useful to see, and `finish_non_exhaustive` says so rather
+// than pretending this is the whole struct.
+impl<P, M> fmt::Debug for Agent<P, M>
+where
+    P: LlmProvider,
+    M: Memory,
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Agent")
+            .field("registry", &self.registry)
+            .field("max_steps", &self.max_steps)
+            .field("execution_hook", &self.execution_hook.is_some())
+            .finish_non_exhaustive()
+    }
 }
 
 impl<P, M> Agent<P, M>
