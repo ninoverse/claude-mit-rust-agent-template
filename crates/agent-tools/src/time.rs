@@ -2,7 +2,7 @@
 
 use agent_core::tool::{Tool, ToolDefinition};
 use chrono::Local;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 /// A tool that returns the current local system date and time.
 #[derive(Default)]

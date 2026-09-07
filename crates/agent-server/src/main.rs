@@ -9,7 +9,7 @@ use agent_core::memory::SimpleMemory;
 use agent_core::tool::ToolRegistry;
 use agent_tools::calculator::CalculatorTool;
 use agent_tools::time::TimeTool;
-use axum::{routing::get, routing::post, Json, Router};
+use axum::{Json, Router, routing::get, routing::post};
 use serde::{Deserialize, Serialize};
 use tracing_subscriber::EnvFilter;
 

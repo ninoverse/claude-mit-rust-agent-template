@@ -25,7 +25,7 @@ cargo install --locked cargo-nextest cargo-watch cargo-deny cargo-audit
 
 ## Architecture & Workspace Rules
 
-**Layout:** Cargo workspace, edition `2021`. New code goes in a crate under `crates/<name>/`. The workspace root `Cargo.toml` declares `members = ["crates/*"]` and centralizes shared metadata under `[workspace.package]` and shared dependencies under `[workspace.dependencies]`.
+**Layout:** Cargo workspace, edition `2024`. New code goes in a crate under `crates/<name>/`. The workspace root `Cargo.toml` declares `members = ["crates/*"]` and centralizes shared metadata under `[workspace.package]` and shared dependencies under `[workspace.dependencies]`.
 
 **Crate inheritance:** Crate manifests inherit shared keys from the workspace using `<key>.workspace = true` (e.g. `edition.workspace = true`, `license.workspace = true`). Shared dependencies are referenced as `<crate> = { workspace = true }`.
 

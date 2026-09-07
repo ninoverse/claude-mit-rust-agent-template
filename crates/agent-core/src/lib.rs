@@ -21,7 +21,7 @@ mod tests {
     use error::AgentError;
     use llm::MockLlmProvider;
     use memory::SimpleMemory;
-    use serde_json::{json, Value};
+    use serde_json::{Value, json};
     use tool::{Tool, ToolDefinition, ToolRegistry};
 
     struct TestTool;
