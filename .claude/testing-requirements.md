@@ -2,12 +2,43 @@
 
 ## Before merging any change
 
-- [ ] `cargo fmt --all -- --check`
-- [ ] `cargo clippy --workspace --all-targets --all-features -- -D warnings`
-- [ ] `cargo nextest run --workspace`  *(falls back to `cargo test --workspace` if nextest is not installed)*
-- [ ] `cargo deny check` *(licenses + advisories)*
+```bash
+just ci
+```
 
-All four must pass before marking a PR ready for review.
+That runs the four gates in order:
+
+- [ ] `just fmt-check` — formatting is clean
+- [ ] `just lint` — clippy, warnings as errors
+- [ ] `just test` — nextest *(falls back to `cargo test` if not installed)* plus doc-tests
+- [ ] `just deny` — licenses + advisories
+
+All four must pass before pushing the branch. The underlying cargo commands live
+in the `justfile`; call the recipe rather than copying them.
+
+## What CI adds
+
+`.github/workflows/ci.yml` calls the organization's reusable `rust-ci.yml`,
+which runs the same four recipes as separate jobs, so a red build names the gate
+that broke. Running `just ci` locally first is still the rule — CI is the
+backstop, not the first place you find out.
+
+Two things CI checks that a local run does not:
+
+- **MSRV.** A job pinned to 1.86 (via `RUSTUP_TOOLCHAIN`, which overrides
+  `rust-toolchain.toml`) proves the workspace still builds on the `rust-version`
+  in `Cargo.toml`. Locally you are on stable, so you would never notice. The
+  number is measured, not chosen: `clap` and `idna_adapter` are edition 2024,
+  which cargo 1.84 cannot parse at all, and the `icu_*` chain reached through
+  `jsonschema` requires 1.86. It is also declared in four places —
+  `Cargo.toml`, `clippy.toml`, the `Dockerfile` and the `msrv` input in
+  `ci.yml` — and this job is what catches a partial bump.
+- **Advisories over time.** `.github/workflows/audit.yml` runs weekly, because a
+  new advisory lands against dependencies you already have, with no commit to
+  trigger a push build.
+
+Coverage is produced as a downloadable HTML artifact on every run. It is not a
+gate — nothing fails on a coverage number.
 
 ## Test layout
 

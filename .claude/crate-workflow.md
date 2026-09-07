@@ -44,12 +44,20 @@ name = "<name>"
 version = "0.1.0"
 edition.workspace = true
 license.workspace = true
+repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
 # Shared deps come from the workspace:
 # serde = { workspace = true }
+
+[lints]
+workspace = true
 ```
+
+The `[lints]` table is **not** optional. Without it the crate silently opts out
+of the workspace lints in `Cargo.toml` and `-D warnings` will not catch a
+missing doc comment or an `unwrap()` in a non-test path.
 
 ### 3. `crates/<name>/src/lib.rs` (or `main.rs`)
 
@@ -69,6 +77,9 @@ Inline at the bottom of the file under test:
 ```rust
 #[cfg(test)]
 mod tests {
+    // Test code asserts rather than propagating; see .claude/code-review.md.
+    #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic_in_result_fn)]
+
     use super::*;
 
     #[test]
@@ -77,6 +88,12 @@ mod tests {
     }
 }
 ```
+
+The inner `#![allow(...)]` is what makes the exemption real. All three are set
+workspace-wide and fire in test targets too, so without it a `.unwrap()` in a
+test fails the clippy gate. The third is needed the moment a test returns
+`Result` — an `assert!` inside one is exactly what `panic_in_result_fn` is for,
+and every async test in this workspace has that shape.
 
 ### 6. Integration tests + doc tests
 
@@ -98,38 +115,23 @@ other-crate = { path = "../other-crate" }
 
 ### 8. Verification gate
 
-All three must pass before committing:
+All four gates must pass, with zero warnings, before committing:
 
 ```bash
-cargo fmt --all -- --check
-cargo clippy --workspace --all-targets --all-features -- -D warnings
-cargo nextest run --workspace        # falls back to `cargo test --workspace`
+just ci
 ```
 
-### 9. Commit + push + draft PR
+### 9. Commit + push + hand over the PR
 
 ```
 feat(<crate>): add <name> crate
 ```
 
-One crate per commit. Never batch multiple crates in one commit.
+One crate per commit, one commit per branch. Never batch multiple crates.
 
-- Push the commit to the current group branch.
-- If this is the **group's first commit**: open a draft PR immediately.
-- If the draft PR already exists: just push to it.
-- **Stop.** Ask before starting the next crate.
+- Push the branch: `git push -u origin feat/<name>`.
+- Output the PR title and description (`.claude/pr-guidelines.md`). Do not open
+  the PR — the user does that.
+- **Stop.** Wait for the merge, then start the next crate from a fresh `main`.
 
----
-
-## Group verification gate
-
-Run before marking any group PR ready for review:
-
-```bash
-cargo fmt --all -- --check
-cargo clippy --workspace --all-targets --all-features -- -D warnings
-cargo nextest run --workspace
-cargo deny check
-```
-
-All four must pass cleanly with zero warnings.
+The full loop is in `.claude/git-flow.md`.
