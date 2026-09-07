@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 use std::str::FromStr;
 
 /// A tool that evaluates simple mathematical expressions (addition, subtraction, multiplication, division).
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub struct CalculatorTool {}
 
 impl CalculatorTool {
@@ -76,6 +76,10 @@ impl Tool for CalculatorTool {
 
 #[cfg(test)]
 mod tests {
+    // Test code asserts rather than propagating: these three are workspace lints
+    // and fire in test targets too. See .claude/code-review.md.
+    #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic_in_result_fn)]
+
     use super::*;
 
     #[tokio::test]

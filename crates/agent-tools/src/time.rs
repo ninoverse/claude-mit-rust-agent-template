@@ -5,7 +5,7 @@ use chrono::Local;
 use serde_json::{Value, json};
 
 /// A tool that returns the current local system date and time.
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub struct TimeTool {}
 
 impl TimeTool {
@@ -40,6 +40,10 @@ impl Tool for TimeTool {
 
 #[cfg(test)]
 mod tests {
+    // Test code asserts rather than propagating: these three are workspace lints
+    // and fire in test targets too. See .claude/code-review.md.
+    #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic_in_result_fn)]
+
     use super::*;
 
     #[tokio::test]

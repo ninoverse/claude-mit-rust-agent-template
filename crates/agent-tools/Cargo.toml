@@ -16,3 +16,6 @@ anyhow = { workspace = true }
 chrono = { workspace = true }
 tokio = { workspace = true }
 
+
+[lints]
+workspace = true
