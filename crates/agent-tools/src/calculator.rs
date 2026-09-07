@@ -1,7 +1,7 @@
 //! A tool for performing basic mathematical calculations.
 
 use agent_core::tool::{Tool, ToolDefinition};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::str::FromStr;
 
 /// A tool that evaluates simple mathematical expressions (addition, subtraction, multiplication, division).
@@ -62,7 +62,9 @@ impl Tool for CalculatorTool {
             }
             left / right
         } else {
-            return Err(anyhow::anyhow!("Unsupported expression or operator not found. Only single operations of +, -, *, / are supported."));
+            return Err(anyhow::anyhow!(
+                "Unsupported expression or operator not found. Only single operations of +, -, *, / are supported."
+            ));
         };
 
         Ok(json!({
