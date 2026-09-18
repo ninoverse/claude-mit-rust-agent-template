@@ -1,6 +1,6 @@
 <!--
 Title format: <type>(<scope>): <description>, under 72 characters.
-See .claude/pr-guidelines.md and .claude/commit-conventions.md.
+See .agents/pr-guidelines.md and .agents/commit-conventions.md.
 
 Note: the subject line of the merged commit decides the next version — `feat` is
 a minor bump, `fix`/`perf`/`refactor`/`chore`/`docs` a patch, `!` or

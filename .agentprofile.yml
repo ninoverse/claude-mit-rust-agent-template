@@ -1,0 +1,5 @@
+config_version: v0.17.6
+language: rust
+deployment: service
+concerns: [template]
+emit: [agents-md, claude]

@@ -1,10 +1,14 @@
 ---
-description: Run the four merge gates and report exactly which pass or fail
+name: "gates"
+description: "Run the four merge gates and report exactly which pass or fail"
 argument-hint: "[optional: -p <crate> to scope to one crate]"
-allowed-tools: Bash(just:*), Bash(cargo:*)
+allowed-tools: "Bash(just:*), Bash(cargo:*)"
 ---
 
-Run the four merge gates defined in `.claude/testing-requirements.md`:
+<!-- language/rust/tasks/gates.md · v0.17.6 -->
+# Merge gates
+
+Run the four merge gates defined in *Testing instructions*:
 
 ```
 just ci
@@ -23,5 +27,8 @@ Then report a one-line-per-gate summary:
   paraphrase.
 - Whether any gate could not run because its tool is not installed. Do not
   report a skipped gate as a passing gate.
+
+`just ci` stops at the first failing recipe, so a gate listed after the failure
+has not run. Report those as not run, not as passing.
 
 Do not fix anything unless asked. This command reports; it does not edit.
