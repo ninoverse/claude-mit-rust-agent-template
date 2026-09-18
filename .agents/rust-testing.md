@@ -1,4 +1,6 @@
-# Testing Requirements
+<!-- agentcfg:start -->
+<!-- language/rust/testing.md · v0.17.6 -->
+# Testing instructions
 
 ## Before merging any change
 
@@ -25,14 +27,11 @@ backstop, not the first place you find out.
 
 Two things CI checks that a local run does not:
 
-- **MSRV.** A job pinned to 1.86 (via `RUSTUP_TOOLCHAIN`, which overrides
+- **MSRV.** A job pinned to the MSRV (via `RUSTUP_TOOLCHAIN`, which overrides
   `rust-toolchain.toml`) proves the workspace still builds on the `rust-version`
   in `Cargo.toml`. Locally you are on stable, so you would never notice. The
-  number is measured, not chosen: `clap` and `idna_adapter` are edition 2024,
-  which cargo 1.84 cannot parse at all, and the `icu_*` chain reached through
-  `jsonschema` requires 1.86. It is also declared in four places —
-  `Cargo.toml`, `clippy.toml`, the `Dockerfile` and the `msrv` input in
-  `ci.yml` — and this job is what catches a partial bump.
+  MSRV is declared in `Cargo.toml`, `clippy.toml` and the `msrv` input in
+  `ci.yml`, and this job is what catches a partial bump.
 - **Advisories over time.** `.github/workflows/audit.yml` runs weekly, because a
   new advisory lands against dependencies you already have, with no commit to
   trigger a push build.
@@ -64,3 +63,20 @@ cargo test --test <integration_file>          # one integration file
 ```bash
 cargo watch -x 'nextest run --workspace'
 ```
+<!-- agentcfg:end -->
+
+## This repository's MSRV
+
+Local to this repository: the composed rules above describe the MSRV job in
+general, and these are the two things about it that are true only here.
+
+**The number is measured, not chosen.** 1.86 is the floor the dependency tree
+imposes: `clap` and `idna_adapter` are edition 2024, which cargo 1.84 cannot
+parse at all, and the `icu_*` chain reached through `jsonschema` requires 1.86.
+Raising it is fine; lowering it below 1.86 does not build.
+
+**It is declared in four places here, not three** — `Cargo.toml`,
+`clippy.toml`, the `msrv` input in `ci.yml`, and the `Dockerfile` base image,
+which the other Rust repositories do not pin to the MSRV. The CI job compares
+the input against `Cargo.toml` and so catches a partial bump between those two;
+the `Dockerfile` is on you.

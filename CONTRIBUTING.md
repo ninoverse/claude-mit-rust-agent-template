@@ -1,7 +1,7 @@
 # Contributing
 
 The rules that govern this repository live in [`CLAUDE.md`](CLAUDE.md) and
-[`.claude/`](.claude/). They are written for Claude Code but they are not
+[`.agents/`](.agents/). They are written for Claude Code but they are not
 agent-specific — they are the conventions, and they apply to humans identically.
 This file is the short version and points at the authoritative one for each
 topic.
@@ -23,14 +23,14 @@ fill in a provider key. `.env` is gitignored; never commit one.
 ## The loop
 
 One branch, one commit, one PR, merged before the next begins. No stacked PRs.
-Full rules in [`.claude/git-flow.md`](.claude/git-flow.md).
+Full rules in [`.agents/git-flow.md`](.agents/git-flow.md).
 
 ```bash
 git switch main && git pull --ff-only
-git switch -c <type>/<short-description>     # .claude/branch-naming.md
+git switch -c <type>/<short-description>     # .agents/branch-naming.md
 # ... change ...
 just ci                                      # must pass before you push
-git commit                                   # .claude/commit-conventions.md
+git commit                                   # .agents/commit-conventions.md
 git push -u origin <branch>
 ```
 
@@ -48,12 +48,12 @@ just ci
 
 `fmt-check` · `lint` · `test` · `deny`. All four, zero warnings, before you push.
 CI runs the same recipes, one job per gate, plus an MSRV job.
-See [`.claude/testing-requirements.md`](.claude/testing-requirements.md).
+See [`.agents/rust-testing.md`](.agents/rust-testing.md).
 
 ## Adding a crate
 
 Follow the nine steps in
-[`.claude/crate-workflow.md`](.claude/crate-workflow.md).
+[`.agents/new-crate.md`](.agents/new-crate.md).
 
 Three things that are easy to miss and that the gates will catch:
 

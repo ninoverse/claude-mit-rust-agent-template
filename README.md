@@ -33,7 +33,7 @@ cargo run -p agent-cli -- --log debug
 ### 2. Run the merge gates
 
 The `justfile` is the single source of truth for every command — CI and the
-`.claude/` rules call these recipes rather than repeating cargo invocations.
+The composed rules call these recipes rather than repeating cargo invocations.
 
 ```bash
 cargo install --locked just
@@ -248,22 +248,30 @@ with it.
 
 ## Rule files
 
-| File | Purpose |
-|------|---------|
-| `.claude/git-flow.md` | The branch → commit → PR loop. One branch in flight, no stacked PRs |
-| `.claude/branch-naming.md` | Branch prefix and format conventions |
-| `.claude/commit-conventions.md` | Conventional Commits rules — and the version bump |
-| `.claude/pr-guidelines.md` | PR title, description template, size guidance |
-| `.claude/testing-requirements.md` | Test gates (fmt, clippy, nextest, deny) |
-| `.claude/file-naming.md` | Workspace and per-crate layout |
-| `.claude/code-review.md` | Review checklist (lint, error handling, unsafe, docs, deps) |
-| `.claude/crate-workflow.md` | Step-by-step procedure to add a crate |
-| `.claude/execution-order.md` | What order to build things in, and one PR per what |
+The rules are not written here. They are composed from
+[`ninoverse/agent-config-sync`](https://github.com/ninoverse/agent-config-sync)
+by `agentcfg`, at the version this repository pins:
+
+| File | What it is |
+|------|------------|
+| `.agentprofile.yml` | This repo's value on each axis — language, deployment, concerns — and the `config_version` it pins. The only file in the list a human edits. |
+| `AGENTS.md` | Everything loaded in every session, plus one index line per rule that is not. Read by every agent that reads AGENTS.md. |
+| `CLAUDE.md` | A two-line `@AGENTS.md` import, plus anything true only for Claude Code. |
+| `.agents/*.md` | One file per on-demand rule: the git flow, commit conventions, the crate workflow, the review checklist. Agent-neutral. |
+| `.claude/skills/` | The task rules again, as Claude Code skills — `/gates`, `/new-crate`, `/why`. One fragment, two renderings. |
+
+Every composed block opens with a provenance comment naming the fragment it came
+from, so a rule is always traceable to one file upstream. To find which, run
+`just agentcfg why "<phrase>"`. To change a rule for every repository, open a
+pull request against that fragment. To change it for this one only, put it
+outside the `<!-- agentcfg:start -->` / `<!-- agentcfg:end -->` markers —
+regeneration never touches what sits outside them. This repository's MSRV note
+at the foot of [`.agents/rust-testing.md`](.agents/rust-testing.md) is the
+worked example.
 
 `.claude/settings.json` carries the permission allowlist and two hooks: rustfmt
-on save, and `cargo check` when a turn ends. `.claude/commands/` adds `/gates`
-and `/new-crate`. [`CONTRIBUTING.md`](CONTRIBUTING.md) is the short version of
-all of it.
+on save, and `cargo check` when a turn ends.
+[`CONTRIBUTING.md`](CONTRIBUTING.md) is the short version of all of it.
 
 ### Not in this repository
 

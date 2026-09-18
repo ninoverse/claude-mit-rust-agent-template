@@ -1,7 +1,11 @@
 # Task runner for this workspace. Install: cargo install --locked just
 #
-# These recipes are the canonical form of every command in CLAUDE.md, the README
-# and the .claude/ rule files. Change a command here, not in five places.
+# These recipes are the canonical form of every command in AGENTS.md, the README
+# and the .agents/ rule files. Change a command here, not in five places.
+
+# Shebang recipes only receive their parameters as "$@" with this set, which is
+# what `agentcfg *args` below relies on.
+set positional-arguments
 
 # List available recipes
 default:
@@ -43,7 +47,7 @@ test:
 deny:
     cargo deny check
 
-# All four merge gates, in the order .claude/testing-requirements.md lists them
+# All four merge gates, in the order .agents/rust-testing.md lists them
 ci: fmt-check lint test deny
 
 # Known CVEs in the dependency tree
@@ -68,12 +72,52 @@ release:
 docker-build:
     docker build --tag agent-server:latest .
 
-# Scaffold a crate, then follow .claude/crate-workflow.md for the rest
+# Scaffold a crate, then follow .agents/new-crate.md for the rest
 new-crate name:
     cargo new --lib crates/{{ name }}
     @echo "Now: add '[lints]\\nworkspace = true' to crates/{{ name }}/Cargo.toml"
     @echo "and switch its [package] keys to '<key>.workspace = true'."
-    @echo "See .claude/crate-workflow.md — 9 steps, do not skip."
+    @echo "See .agents/new-crate.md — 9 steps, do not skip."
+
+# `just agentcfg check` is what someone runs after editing their profile, and the
+# point is that it needs nothing installed: the published binary is static, and
+# the Go repositories have no Rust toolchain to build one with. The version
+# comes from `.agentprofile.yml`, so the cache cannot drift from the pin — a
+# bump fetches a new file rather than reusing a stale one — and `.agentcfg/` is
+# gitignored, so nothing downloaded is ever committed.
+#
+# Run the pinned agentcfg, fetching it once into a gitignored cache
+agentcfg *args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    if [ ! -f .agentprofile.yml ]; then
+        echo "no .agentprofile.yml here — this recipe is for a repository agentcfg manages" >&2
+        exit 1
+    fi
+    version=$(sed -n 's/^config_version:[[:space:]]*//p' .agentprofile.yml)
+
+    # The asset names are the rustc target triples the release publishes, and
+    # nothing else builds these URLs, so a rename here is a rename there.
+    case "$(uname -s)/$(uname -m)" in
+        Linux/x86_64)              target=x86_64-unknown-linux-musl ;;
+        Linux/aarch64 | Linux/arm64) target=aarch64-unknown-linux-musl ;;
+        Darwin/arm64)              target=aarch64-apple-darwin ;;
+        *)
+            echo "no agentcfg binary for $(uname -s)/$(uname -m) — published: linux-musl x86_64 and aarch64, darwin aarch64" >&2
+            exit 1
+            ;;
+    esac
+
+    binary=".agentcfg/agentcfg-${version}"
+    if [ ! -x "${binary}" ]; then
+        mkdir -p .agentcfg
+        curl -fsSL -o "${binary}" \
+            "https://github.com/ninoverse/agent-config-sync/releases/download/${version}/agentcfg-${target}"
+        chmod +x "${binary}"
+    fi
+
+    exec "${binary}" "$@"
 
 # Install the auxiliary tooling the gates need (once per machine)
 setup:
