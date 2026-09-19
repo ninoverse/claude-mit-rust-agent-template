@@ -1,0 +1,32 @@
+# The Dockerfile is `COPY . .`, so everything not listed here is uploaded to the
+# builder on every `just docker-build`. target/ is the whole point of the file —
+# it is gigabytes of build output and would dwarf the source and bust the cache.
+target/
+**/target/
+
+.git/
+.github/
+.agents/
+.claude/
+
+# The agentcfg binary `just agentcfg` fetches. Gitignored, so it exists only on
+# a working laptop — which is exactly where `docker build` runs.
+.agentcfg/
+
+Dockerfile
+.dockerignore
+README.md
+AGENTS.md
+CLAUDE.md
+CONTRIBUTING.md
+LICENSE
+
+# Never let secrets into an image layer. `.env`, `key.json` and `history.json`
+# are gitignored, so a fresh clone carries none of them and a laptop that has
+# ever run the agent carries all three.
+.env
+.env.*
+key.json
+history.json
+*.pem
+*.key
