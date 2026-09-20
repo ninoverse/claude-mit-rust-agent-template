@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   deploy:
-    uses: ninoverse/.github/.github/workflows/release-cloudrun.yml@v1
+    uses: ninoverse/.github/.github/workflows/release-cloudrun.yml@v1.1.1
     with:
       # Matches the binary the Dockerfile builds with `-p agent-server`.
       service: agent-server
