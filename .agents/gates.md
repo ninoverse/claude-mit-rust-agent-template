@@ -1,5 +1,5 @@
 <!-- agentcfg:start -->
-<!-- language/rust/tasks/gates.md · v0.17.6 -->
+<!-- language/rust/tasks/gates.md · v0.18.10 -->
 # Merge gates
 
 Run the four merge gates defined in *Testing instructions*:

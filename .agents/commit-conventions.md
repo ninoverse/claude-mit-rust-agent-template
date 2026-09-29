@@ -1,5 +1,5 @@
 <!-- agentcfg:start -->
-<!-- core/commit-conventions.md · v0.17.6 -->
+<!-- core/commit-conventions.md · v0.18.10 -->
 # Commit message guidelines
 
 Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.

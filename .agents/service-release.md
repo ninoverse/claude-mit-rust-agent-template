@@ -1,5 +1,5 @@
 <!-- agentcfg:start -->
-<!-- deployment/service/release.md · v0.17.6 -->
+<!-- deployment/service/release.md · v0.18.10 -->
 # Releases and deploys
 
 A merged PR is a deploy. `bump-version.yml` tags every push to `main` whose
