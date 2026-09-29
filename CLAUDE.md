@@ -1,8 +1,8 @@
 <!-- agentcfg:start -->
-<!-- agentcfg:import · v0.17.6 -->
+<!-- agentcfg:import · v0.18.10 -->
 @AGENTS.md
 
-<!-- language/rust/automation.md · v0.17.6 -->
+<!-- language/rust/automation.md · v0.18.10 -->
 # Automation
 
 `.claude/settings.json` allowlists the commands in *Build and test commands* so

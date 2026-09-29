@@ -1,7 +1,7 @@
 Scaffolding for new Rust agent projects: a tool-calling agent core, an Axum server and a CLI, with the merge gates wired to CI and the agent rules already in place. Fork or copy it to start a project.
 
 <!-- agentcfg:start -->
-<!-- language/rust/tooling.md · v0.17.6 -->
+<!-- language/rust/tooling.md · v0.18.10 -->
 # Build and test commands
 
 **Toolchain:** Rust is pinned via `rust-toolchain.toml` (channel = `stable`). Every contributor automatically gets the latest stable toolchain on first `cargo` invocation. Required components: `rustfmt`, `clippy`.
@@ -43,7 +43,7 @@ subcommand, so the four gates have to be run in sequence.
 
 **MSRV:** Declared in `[workspace.package].rust-version`, `clippy.toml`, and the `msrv` input in `.github/workflows/ci.yml`. Raising it means editing all of them together; the MSRV job compares the last against the first and fails a partial bump. Do not bump it incidentally.
 
-<!-- core/behavior.md · v0.17.6 -->
+<!-- core/behavior.md · v0.18.10 -->
 # Behavioral guidelines
 
 **Maintain the Build:** Never leave the codebase in a state where build, lint,
@@ -83,7 +83,7 @@ your work before concluding a task.
 - Transform tasks into verifiable goals (e.g., "Add validation" → "Write tests for invalid inputs, then make them pass").
 - For multi-step tasks, state a brief plan and verify each step independently.
 
-<!-- concerns/template/rules.md · v0.17.6 -->
+<!-- concerns/template/rules.md · v0.18.10 -->
 # Template repository
 
 This repository is a GitHub template: new projects start as a copy of it, and
@@ -92,14 +92,14 @@ every copy inherits everything here.
 - Keep the example code minimal. It demonstrates the conventions and keeps the
   gates green on a fresh copy; it holds no real business logic.
 - Where the template ships placeholder crates, they exist because the
-  toolchain fails on an empty workspace and the `Dockerfile` needs a
+  gates fail on an empty workspace and the `Dockerfile` needs a
   binary to build. Remove a placeholder only once a real crate covers its
   role, as a change of its own, and point the `Dockerfile` at the real binary in
   that change.
 - A project created from this template removes `template` from `concerns` in its
   `.agentprofile.yml`.
 
-<!-- agentcfg:index · v0.17.6 -->
+<!-- agentcfg:index · v0.18.10 -->
 # Extended rules
 
 Read these when they apply; they are not loaded by default.

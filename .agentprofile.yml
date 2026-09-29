@@ -1,4 +1,4 @@
-config_version: v0.17.6
+config_version: v0.18.10
 language: rust
 deployment: service
 concerns: [template]

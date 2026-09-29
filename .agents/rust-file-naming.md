@@ -1,5 +1,5 @@
 <!-- agentcfg:start -->
-<!-- language/rust/file-naming.md · v0.17.6 -->
+<!-- language/rust/file-naming.md · v0.18.10 -->
 # Directories and file naming
 
 ## Workspace layout
