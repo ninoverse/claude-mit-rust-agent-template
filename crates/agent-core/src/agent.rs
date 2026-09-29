@@ -143,7 +143,8 @@ where
                                                     if let Err(err) = validator.validate(&args) {
                                                         Some(format!(
                                                             "Path '{}': {}",
-                                                            err.instance_path, err
+                                                            err.instance_path(),
+                                                            err
                                                         ))
                                                     } else {
                                                         None

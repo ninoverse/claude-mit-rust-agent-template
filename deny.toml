@@ -18,6 +18,9 @@ allow = [
     # MIT without the attribution clause — strictly more permissive than MIT,
     # which is already allowed above.
     "MIT-0",
+    # foldhash, hashbrown's default hasher since 0.15, which jsonschema reaches
+    # through referencing. Permissive and OSI-approved, like the licenses above.
+    "Zlib",
 ]
 confidence-threshold = 0.93
 
