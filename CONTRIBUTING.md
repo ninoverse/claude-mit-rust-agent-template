@@ -84,9 +84,7 @@ pushes a matching tag — `feat` minor, `fix`/`perf`/`refactor`/`chore`/`docs`
 patch, `!` or `BREAKING CHANGE` major. Anything else bumps nothing. So the commit
 convention is not only documentation: it picks the version number.
 
-The tag then triggers the Cloud Run deploy, which needs `vars.GCP_PROJECT`,
-`vars.GCP_REGION` and `secrets.GCP_SERVICE_ACCOUNT`. Neither workflow is defined
-here; both call
+Nothing deploys on the tag. The workflow is not defined here; it calls
 [`ninoverse/.github`](https://github.com/ninoverse/.github).
 
 ## Dependency updates
@@ -127,9 +125,8 @@ Four things point at `ninoverse` and will not work as-is:
 - `.github/workflows/ci.yml` and `audit.yml` call reusable workflows from that
   same repository. They are public and pinned to `@v1`, so they keep working —
   see the README for how to vendor them instead.
-- `.github/workflows/bump-version.yml` and `release.yml` do the same, and also
-  need organization-level GitHub App and Google Cloud credentials that a fork
-  does not inherit.
+- `.github/workflows/bump-version.yml` does the same, and also needs an
+  organization-level GitHub App credential that a fork does not inherit.
 - `.github/CODEOWNERS` names `@nicolapasqua99`.
 
 `SECURITY.md`, `CODE_OF_CONDUCT.md` and the issue forms are **not** in this

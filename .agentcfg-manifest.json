@@ -11,7 +11,7 @@
     ".agents/rust-code-review.md",
     ".agents/rust-file-naming.md",
     ".agents/rust-testing.md",
-    ".agents/service-release.md",
+    ".agents/tag-only-release.md",
     ".claude/settings.json",
     ".claude/skills/gates/SKILL.md",
     ".claude/skills/new-crate/SKILL.md",
