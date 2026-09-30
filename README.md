@@ -290,6 +290,9 @@ and
 [`rust-audit.yml`](https://github.com/ninoverse/.github/blob/main/.github/workflows/rust-audit.yml)
 into your own `.github/workflows/` and drop the `uses:` line. They call the same
 `just` recipes either way.
+`ci.yml` also calls
+[`actionlint.yml`](https://github.com/ninoverse/.github/blob/main/.github/workflows/actionlint.yml),
+which lints the workflow files and calls no recipe; copy it the same way.
 
 `bump-version.yml` and `release.yml` will **not** work in a fork as-is: they need
 organization-level GitHub App credentials a fork does not inherit, on top of the
