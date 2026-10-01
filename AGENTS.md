@@ -106,7 +106,7 @@ Read these when they apply; they are not loaded by default.
 
 **By activity:**
 
-- **Any change that ends in a PR:** [Git flow](.agents/git-flow.md) and [Releases and deploys](.agents/service-release.md)
+- **Any change that ends in a PR:** [Git flow](.agents/git-flow.md) and [Releases](.agents/tag-only-release.md)
 - **Creating branches:** [Branch naming](.agents/branch-naming.md)
 - **Reviewing PRs:** [Code review](.agents/code-review.md) and [Rust code review](.agents/rust-code-review.md)
 - **Committing code:** [Commit message guidelines](.agents/commit-conventions.md)
