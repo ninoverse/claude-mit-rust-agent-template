@@ -1,4 +1,4 @@
-config_version: v0.18.10
+config_version: v1.0.1
 language: rust
 deployment: tag-only
 concerns: [template]
