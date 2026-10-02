@@ -22,7 +22,7 @@ fill in a provider key. `.env` is gitignored; never commit one.
 
 ## The loop
 
-One branch, one commit, one PR, merged before the next begins. No stacked PRs.
+One branch, one PR, merged before the next begins. No stacked PRs.
 Full rules in [`.agents/git-flow.md`](.agents/git-flow.md).
 
 ```bash
@@ -34,11 +34,8 @@ git commit                                   # .agents/commit-conventions.md
 git push -u origin <branch>
 ```
 
-Then open a PR using the template. If Claude Code prepared the branch, it stops
-before opening the PR by design — that step is yours.
-
-Because a branch is only pushed once the gates already pass, there is no
-work-in-progress state to represent. Draft PRs are not used.
+Then open a PR using the template. Who opens a PR, when it is a draft, and who
+merges it is in [`.agents/pr-guidelines.md`](.agents/pr-guidelines.md).
 
 ## The four gates
 
@@ -79,10 +76,11 @@ reached through `jsonschema` requires 1.86.
 
 ## Releases
 
-Merging to `main` bumps `[workspace.package].version` from the commit subject and
-pushes a matching tag — `feat` minor, `fix`/`perf`/`refactor`/`chore`/`docs`
-patch, `!` or `BREAKING CHANGE` major. Anything else bumps nothing. So the commit
-convention is not only documentation: it picks the version number.
+Merging to `main` bumps `[workspace.package].version` from the subject of the
+squash commit, which is the PR title, and pushes a matching tag.
+[`.agents/commit-conventions.md`](.agents/commit-conventions.md) says which
+subject cuts which release, so the convention is not only documentation: it
+picks the version number.
 
 Nothing deploys on the tag. The workflow is not defined here; it calls
 [`ninoverse/.github`](https://github.com/ninoverse/.github).
