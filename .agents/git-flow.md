@@ -1,5 +1,5 @@
 <!-- agentcfg:start -->
-<!-- core/git-flow.md · v1.0.1 -->
+<!-- core/git-flow.md · v1.2.1 -->
 # Git flow
 
 The branch → commit → PR loop for **every** change in this repository. There is
