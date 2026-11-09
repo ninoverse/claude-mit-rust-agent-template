@@ -1,5 +1,5 @@
 # Multi-stage build for the agent-server binary.
-FROM rust:1.98-bookworm AS builder
+FROM rust:1.99-bookworm AS builder
 WORKDIR /app
 COPY . .
 RUN cargo build --release --locked -p agent-server
